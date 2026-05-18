@@ -8,6 +8,7 @@ import {
 } from "../../features/host-admin/api";
 import { AdminOnboardingForm } from "../../features/host-admin/components/AdminOnboardingForm";
 import { AdminSignInForm } from "../../features/host-admin/components/AdminSignInForm";
+import { HostAdminWebAccessWorkspace } from "../../features/host-admin/components/HostAdminWebAccessWorkspace";
 import { getApiErrorMessage, isApiErrorStatus } from "../../lib/api";
 
 const ENTRY_MODES = {
@@ -114,29 +115,41 @@ export function HostAdminEntryPage() {
     }
   }
 
+  if (isAuthenticated) {
+    return (
+      <HostAdminWebAccessWorkspace
+        session={session}
+        flash={flash}
+        setFlash={setFlash}
+        onLogout={() => logoutMutation.mutate()}
+        logoutPending={logoutMutation.isPending}
+      />
+    );
+  }
+
   return (
     <main className="page-shell">
       <section className="page-grid">
         <div className="hero-panel">
           <span className="eyebrow">Host Admin Mode</span>
-          <h1>ManageIt starts on localhost with installation setup and admin sign-in.</h1>
+          <h1>ManageIt starts on localhost with installation setup, sign-in, and approvals.</h1>
           <p className="hero-copy">
-            This frontend slice uses the implemented backend contract for
+            This frontend uses the implemented backend contract for
             <code> /api/admin/onboarding </code>
             and
             <code> /api/admin/session/* </code>
-            so the host computer can configure the installation before approving devices
-            or managing inventory.
+            plus browser approvals, iPhone pairings, and registered-device management once
+            the host admin session is active.
           </p>
 
           <div className="hero-actions">
             <div className="stat-card">
-              <span className="stat-label">Feature status</span>
-              <strong>Implemented first slice</strong>
+              <span className="stat-label">Ready now</span>
+              <strong>Onboarding and sign-in</strong>
             </div>
             <div className="stat-card">
-              <span className="stat-label">Backend wiring</span>
-              <strong>Session cookie + onboarding JSON</strong>
+              <span className="stat-label">Authenticated workspace</span>
+              <strong>Approvals, pairings, and device registry</strong>
             </div>
           </div>
 
@@ -158,8 +171,8 @@ export function HostAdminEntryPage() {
             <div className="timeline-step">
               <span className="timeline-index">03</span>
               <div>
-                <h2>Unlock next features</h2>
-                <p>Approvals, devices, settings, and inventory plug into this entry point next.</p>
+                <h2>Review browser requests</h2>
+                <p>After sign-in, the host-only workspace can approve browsers, pair iPhones, manage registered devices, and expand into more admin tools later.</p>
               </div>
             </div>
           </div>
@@ -188,70 +201,37 @@ export function HostAdminEntryPage() {
             </div>
           ) : null}
 
-          {isAuthenticated ? (
-            <div className="panel-stack">
-              <div className="session-card">
-                <span className="pill pill-success">Authenticated</span>
-                <h3>{session.organizationName}</h3>
-                <p>
-                  The host admin session is active. This is the handoff point for the next
-                  feature slices.
-                </p>
-              </div>
+          <div className="tab-row" role="tablist" aria-label="Host admin entry modes">
+            <button
+              className={`tab-button ${entryMode === ENTRY_MODES.LOGIN ? "active" : ""}`}
+              type="button"
+              onClick={() => setEntryMode(ENTRY_MODES.LOGIN)}
+            >
+              Admin sign-in
+            </button>
+            <button
+              className={`tab-button ${entryMode === ENTRY_MODES.ONBOARDING ? "active" : ""}`}
+              type="button"
+              onClick={() => setEntryMode(ENTRY_MODES.ONBOARDING)}
+            >
+              First-time setup
+            </button>
+          </div>
 
-              <div className="panel-section">
-                <h3>Current slice complete</h3>
-                <p>
-                  Onboarding and sign-in are working against the real backend endpoints.
-                  Device approvals, settings, and inventory routes are intentionally held for
-                  the next validation step.
-                </p>
-              </div>
-
-              <button
-                className="button button-secondary"
-                type="button"
-                onClick={() => logoutMutation.mutate()}
-                disabled={logoutMutation.isPending}
-              >
-                {logoutMutation.isPending ? "Signing out..." : "Sign out"}
-              </button>
-            </div>
+          {entryMode === ENTRY_MODES.LOGIN ? (
+            <AdminSignInForm
+              onSubmit={handleLogin}
+              isPending={loginMutation.isPending}
+              errorMessage={getApiErrorMessage(loginError)}
+              onSwitchToOnboarding={() => setEntryMode(ENTRY_MODES.ONBOARDING)}
+            />
           ) : (
-            <>
-              <div className="tab-row" role="tablist" aria-label="Host admin entry modes">
-                <button
-                  className={`tab-button ${entryMode === ENTRY_MODES.LOGIN ? "active" : ""}`}
-                  type="button"
-                  onClick={() => setEntryMode(ENTRY_MODES.LOGIN)}
-                >
-                  Admin sign-in
-                </button>
-                <button
-                  className={`tab-button ${entryMode === ENTRY_MODES.ONBOARDING ? "active" : ""}`}
-                  type="button"
-                  onClick={() => setEntryMode(ENTRY_MODES.ONBOARDING)}
-                >
-                  First-time setup
-                </button>
-              </div>
-
-              {entryMode === ENTRY_MODES.LOGIN ? (
-                <AdminSignInForm
-                  onSubmit={handleLogin}
-                  isPending={loginMutation.isPending}
-                  errorMessage={getApiErrorMessage(loginError)}
-                  onSwitchToOnboarding={() => setEntryMode(ENTRY_MODES.ONBOARDING)}
-                />
-              ) : (
-                <AdminOnboardingForm
-                  onSubmit={handleOnboarding}
-                  isPending={onboardingMutation.isPending}
-                  errorMessage={getApiErrorMessage(onboardingError)}
-                  onSwitchToLogin={() => setEntryMode(ENTRY_MODES.LOGIN)}
-                />
-              )}
-            </>
+            <AdminOnboardingForm
+              onSubmit={handleOnboarding}
+              isPending={onboardingMutation.isPending}
+              errorMessage={getApiErrorMessage(onboardingError)}
+              onSwitchToLogin={() => setEntryMode(ENTRY_MODES.LOGIN)}
+            />
           )}
         </aside>
       </section>

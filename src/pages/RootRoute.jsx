@@ -1,4 +1,4 @@
-import { ClientPlaceholderPage } from "./client/ClientPlaceholderPage";
+import { ClientDeviceStartupPage } from "./client/ClientDeviceStartupPage";
 import { HostAdminEntryPage } from "./host-admin/HostAdminEntryPage";
 import { detectHostMode, HOST_MODES } from "../lib/hostMode";
 
@@ -9,5 +9,5 @@ export function RootRoute() {
     return <HostAdminEntryPage />;
   }
 
-  return <ClientPlaceholderPage />;
+  return <ClientDeviceStartupPage />;
 }

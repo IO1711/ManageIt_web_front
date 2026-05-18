@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title>ManageIt icon</title>
+  <defs>
+    <linearGradient id="panel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7ecdc" />
+      <stop offset="100%" stop-color="#f0d8bf" />
+    </linearGradient>
+    <linearGradient id="ink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c85f33" />
+      <stop offset="100%" stop-color="#7f2c18" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="118" fill="#241a16" />
+  <rect x="52" y="52" width="408" height="408" rx="92" fill="url(#panel)" />
+  <path d="M152 362V150h68l36 98 35-98h69v212h-46V230l-38 104h-40l-38-104v132Z" fill="url(#ink)" />
+</svg>

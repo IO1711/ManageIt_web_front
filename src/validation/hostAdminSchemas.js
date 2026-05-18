@@ -44,3 +44,23 @@ export const adminOnboardingSchema = z.object({
       });
     })
 });
+
+export const adminWebAccessApprovalSchema = z.object({
+  role: z.enum(["ADMIN", "EDITOR"]),
+  friendlyName: z
+    .string()
+    .trim()
+    .max(255, "Friendly name must be 255 characters or fewer")
+});
+
+export const adminMobilePairingCreateSchema = z.object({
+  role: z.enum(["ADMIN", "EDITOR"])
+});
+
+export const adminMobilePairingFinalizeSchema = z.object({
+  friendlyName: trimmedRequiredString("Friendly name")
+});
+
+export const adminDeviceRoleUpdateSchema = z.object({
+  role: z.enum(["ADMIN", "EDITOR"])
+});

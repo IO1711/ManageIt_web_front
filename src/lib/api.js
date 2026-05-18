@@ -60,6 +60,10 @@ export function isApiErrorStatus(error, statusCode) {
   return error instanceof ApiRequestError && error.status === statusCode;
 }
 
+export function isApiErrorCode(error, errorCode) {
+  return error instanceof ApiRequestError && error.code === errorCode;
+}
+
 async function parseResponseBody(response) {
   if (response.status === 204) {
     return null;
